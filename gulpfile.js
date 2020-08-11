@@ -1,4 +1,4 @@
-const {series, watch, src, dest, parallel} = require('gulp');
+const { series, watch, src, dest, parallel } = require('gulp');
 const pump = require('pump');
 
 // gulp plugins and utils
@@ -20,6 +20,13 @@ function serve(done) {
     done();
 }
 
+function reload() {
+    return pump([
+        copy(()=>{}),
+        livereload()
+    ]);
+}
+
 const handleError = (done) => {
     return function (err) {
         if (err) {
@@ -29,36 +36,43 @@ const handleError = (done) => {
     };
 };
 
+function copy(done) {
+    return pump([
+        src('./**/*'), 
+        dest('../ghost/content/themes/econ')
+    ], handleError(done));
+}
+
 function hbs(done) {
     pump([
         src(['*.hbs', 'partials/**/*.hbs', '!node_modules/**/*.hbs']),
-        livereload()
+        reload()
     ], handleError(done));
 }
 
 function css(done) {
     var processors = [
         easyimport,
-        customProperties({preserve: false}),
+        customProperties({ preserve: false }),
         colorFunction(),
         autoprefixer(),
         cssnano()
     ];
 
     pump([
-        src('assets/css/*.css', {sourcemaps: true}),
+        src('assets/css/*.css', { sourcemaps: true }),
         postcss(processors),
-        dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        dest('assets/built/', { sourcemaps: '.' }),
+        reload()
     ], handleError(done));
 }
 
 function js(done) {
     pump([
-        src('assets/js/*.js', {sourcemaps: true}),
+        src('assets/js/*.js', { sourcemaps: true }),
         uglify(),
-        dest('assets/built/', {sourcemaps: '.'}),
-        livereload()
+        dest('assets/built/', { sourcemaps: '.' }),
+        reload()
     ], handleError(done));
 }
 
@@ -80,7 +94,8 @@ function zipper(done) {
 
 const cssWatcher = () => watch('assets/css/**', css);
 const hbsWatcher = () => watch(['*.hbs', 'partials/**/*.hbs', '!node_modules/**/*.hbs'], hbs);
-const watcher = parallel(cssWatcher, hbsWatcher); const build = series(css, js);
+const watcher = parallel(cssWatcher, hbsWatcher);
+const build = series(css, js);
 const dev = series(build, serve, watcher);
 
 exports.build = build;
