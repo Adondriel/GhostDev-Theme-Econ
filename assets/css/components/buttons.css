@@ -4,7 +4,7 @@
 input[type="submit"],
 input[type="reset"],
 input[type="button"],
-button,
+button:not(.snipcart-cart-header__close-button):not(.snipcart__button--icon):not(.snipcart__icon):not(.snipcart__font--bold),
 .button {
     display: inline-block;
     height: var(--height);
@@ -73,7 +73,7 @@ button:disabled,
 input[type="submit"],
 input[type="reset"],
 input[type="button"],
-button,
+button:not(.snipcart-cart-header__close-button):not(.snipcart__button--icon):not(.snipcart__icon):not(.snipcart__font--bold),
 .button {
     color: var(--color-primary) !important;
     background-color: transparent;
