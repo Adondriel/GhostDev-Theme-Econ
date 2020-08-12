@@ -132,7 +132,7 @@ body {
 
 .site-head {
     position: relative;
-    z-index: 300;
+    z-index: 10;
     margin-top: -10px;
     font-size: 1.35rem;
 }
